@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Steps to reproduce issue:
 
-## Getting Started
+1. In a terminal run:
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+npm run preview -- --port 3999
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Hit an API route with a POST request from another terminal (the route doesn't even need to exist)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+curl -X POST -H "Content-Type: application/json" -d '{}' localhost:3999/api/test 
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. See stack trace:
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+⎔ Starting local server...
+[wrangler:err] TypeError: Request with a GET or HEAD method cannot have a body.
+    at new CustomRequest (file:///home/mattboardman/opennextjs-cloudflare-issue-201/.open-next/server-functions/default/handler.mjs:28:9)
+    at new r9 (file:///home/mattboardman/opennextjs-cloudflare-issue-201/.open-next/middleware/handler.mjs:2145:11)
+    at r7 (file:///home/mattboardman/opennextjs-cloudflare-issue-201/.open-next/middleware/handler.mjs:2163:59)
+    at null.<anonymous> (file:///home/mattboardman/opennextjs-cloudflare-issue-201/.open-next/middleware/handler.mjs:3053:22)
+    at async eW (file:///home/mattboardman/opennextjs-cloudflare-issue-201/.open-next/middleware/handler.mjs:1087:20)
+    at async Object.edgeFunctionHandler (file:///home/mattboardman/opennextjs-cloudflare-issue-201/.open-next/middleware/handler.mjs:5506:18)
+    at async handleMiddleware (file:///home/mattboardman/opennextjs-cloudflare-issue-201/.open-next/middleware/handler.mjs:6723:18)
+    at async routingHandler (file:///home/mattboardman/opennextjs-cloudflare-issue-201/.open-next/middleware/handler.mjs:6902:25)
+    at null.<anonymous> (async file:///home/mattboardman/opennextjs-cloudflare-issue-201/.wrangler/tmp/dev-pAbCZO/worker.js:124588:20)
+    at null.<anonymous> (async file:///home/mattboardman/opennextjs-cloudflare-issue-201/.wrangler/tmp/dev-pAbCZO/worker.js:123197:20)
+[wrangler:inf] POST /api/ui/search 500 Internal Server Error (333ms)
+```
